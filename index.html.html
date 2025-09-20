@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en" id="top">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelEase - Your AI-Powered Travel Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #06b6d4;
+            --accent: #e63946;
+            --gray: #f3f4f6;
+            --dark: #22223b;
+        }
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(120deg, #e0e7ff 0%, #f3f4f6 100%); color: var(--dark); min-height: 100vh; }
+        .navbar { background: #fff; box-shadow: 0 2px 16px rgba(34,34,59,0.06); position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 2rem; }
+        .navbar .logo { font-size: 1.7rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; }
+        .navbar .nav-center { flex: 1; display: flex; justify-content: center; }
+        .navbar .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .navbar .nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; font-size: 1.08rem; transition: color 0.3s; }
+        .navbar .nav-links a:hover { color: var(--primary); }
+        .navbar .sos-btn { background: var(--accent); color: #fff; border: none; border-radius: 50px; padding: 0.7rem 1.5rem; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 2px 8px rgba(230,57,70,0.18); transition: background 0.3s, transform 0.3s; }
+        .navbar .sos-btn:hover { background: #b71c1c; transform: scale(1.08); }
+        .hero { 
+            background: linear-gradient(120deg, #2563eb 0%, #06b6d4 100%); 
+            color: #fff; 
+            text-align: center; 
+            padding: 5rem 2rem 3rem 2rem; 
+            border-radius: 24px; 
+            margin: 2rem auto 0 auto; 
+            max-width: 900px; 
+            box-shadow: 0 8px 32px rgba(34,34,59,0.08); 
+            position: relative; 
+            overflow: hidden;
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: floatingDots 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes floatingDots {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+        .hero .hero-content { max-width: 700px; margin: 0 auto; position: relative; z-index: 2; }
+        .hero h1 { 
+            font-size: 2.7rem; 
+            margin-bottom: 1.2rem; 
+            font-weight: 800; 
+            animation: fadeInUp 1s ease-out;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .hero p { 
+            font-size: 1.15rem; 
+            margin-bottom: 2rem; 
+            animation: fadeInUp 1s ease-out 0.2s both;
+            opacity: 0.95;
+        }
+        .hero .btn { 
+            background: #fff; 
+            color: var(--primary); 
+            font-weight: 700; 
+            border-radius: 50px; 
+            padding: 0.8rem 2rem; 
+            border: none; 
+            font-size: 1.1rem; 
+            box-shadow: 0 2px 8px rgba(34,34,59,0.08); 
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .hero .btn:hover::before {
+            left: 100%;
+        }
+        .hero .btn:hover { 
+            background: var(--accent); 
+            color: #fff; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(230,57,70,0.3);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            left: 32px;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            box-shadow: 0 4px 16px rgba(6,182,212,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        /* Chatbot Floating Button */
+        .chatbot-btn { position: fixed; bottom: 32px; right: 32px; background: var(--primary); color: #fff; border: none; border-radius: 50%; width: 64px; height: 64px; box-shadow: 0 4px 16px rgba(34,34,59,0.18); display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; z-index: 999; transition: background 0.3s, transform 0.3s; }
+        .chatbot-btn:hover { background: var(--secondary); transform: scale(1.08); }
+        .chatbot-window { position: fixed; bottom: 110px; right: 32px; width: 320px; max-width: 95vw; background: #fff; border-radius: 18px; box-shadow: 0 8px 32px rgba(34,34,59,0.18); z-index: 999; display: none; flex-direction: column; }
+        .chatbot-header { background: var(--primary); color: #fff; padding: 1rem; border-radius: 18px 18px 0 0; font-weight: 700; }
+        .chatbot-body { padding: 1rem; min-height: 120px; font-size: 1rem; color: var(--dark); }
+        .chatbot-input { border: none; border-top: 1px solid #eee; padding: 0.7rem; font-size: 1rem; border-radius: 0 0 18px 18px; }
+        /* Statistics Section */
+        .stats-section {
+            background: #fff;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .stat-item {
+            text-align: center;
+            position: relative;
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.15);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            opacity: 0.7;
+        }
+        /* Features Section */
+        .features-section { background: linear-gradient(90deg, #e0e7ff 0%, #f3f4f6 100%); padding: 3rem 0; }
+        .features-title { text-align: center; font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 2rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 24px rgba(99,102,241,0.10); padding: 2rem 1rem 1rem 1rem; cursor: pointer; position: relative; transition: box-shadow 0.3s, transform 0.3s; min-height: 120px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        .feature-card:hover { box-shadow: 0 8px 32px rgba(99,102,241,0.18); transform: scale(1.04); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary); transition: transform 0.3s; }
+        .feature-card:hover .feature-icon { animation: bounce 0.5s; }
+        @keyframes bounce { 0% { transform: translateY(0); } 30% { transform: translateY(-10px); } 60% { transform: translateY(5px); } 100% { transform: translateY(0); } }
+        .feature-title { font-size: 1.1rem; font-weight: 600; color: var(--dark); margin-bottom: 0.5rem; text-align: center; }
+        .feature-desc { color: #4a4e69; font-size: 1rem; text-align: center; }
+        .feature-card.sos:hover { box-shadow: 0 0 24px 4px #e63946; }
+        .feature-card.sos .feature-icon { color: #e63946; }
+        /* Testimonials Section */
+        .testimonials-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5rem 2rem;
+            color: #fff;
+        }
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+        }
+        .stars {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .author-avatar {
+            font-size: 2.5rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+        }
+        .author-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .author-location {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        /* App Download Section */
+        .app-download-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 5rem 2rem;
+            color: #fff;
+        }
+        .download-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .download-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        .download-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+        .download-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+        .download-btn i {
+            font-size: 2rem;
+        }
+        .download-btn div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .download-btn span {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .download-btn strong {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .download-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        .qr-code {
+            text-align: center;
+        }
+        .qr-pattern {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .qr-pattern::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(0deg, #000, #000 2px, transparent 2px, transparent 6px),
+                repeating-linear-gradient(90deg, #000, #000 2px, transparent 2px, transparent 6px);
+            opacity: 0.8;
+        }
+        .phone-mockup {
+            width: 160px;
+            height: 300px;
+            background: #333;
+            border-radius: 25px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .app-preview {
+            text-align: center;
+            color: #fff;
+        }
+        .app-preview i {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .app-preview span {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        /* Comparison Section */
+        .comparison-section { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 24px rgba(99,102,241,0.10); max-width: 900px; margin: 3rem auto; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+        .comparison-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: 1.2rem; text-align: center; }
+        .comparison-row { display: flex; gap: 2rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .comparison-box { background: #f3f4f6; border-radius: 1rem; padding: 1.2rem 2rem; font-size: 1.1rem; font-weight: 600; color: var(--dark); box-shadow: 0 2px 8px rgba(99,102,241,0.08); min-width: 220px; text-align: center; }
+        .comparison-box.tease { background: linear-gradient(90deg, #2563eb 0%, #06b6d4 100%); color: #fff; }
+        /* Footer */
+        footer { background: #22223b; color: #f3f4f6; padding: 2.5rem 2rem; text-align: center; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: left; }
+        .footer-section h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-section a { color: #f3f4f6; margin-bottom: 0.5rem; display: block; text-decoration: none; font-size: 1rem; }
+        .footer-section a:hover { color: var(--primary); }
+        .copyright { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.95rem; }
+        @media (max-width: 900px) { 
+            .features-grid { grid-template-columns: 1fr 1fr; } 
+            .comparison-row { flex-direction: column; gap: 1rem; }
+            .download-container { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+            .download-visual { justify-content: center; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .stats-container { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        }
+        @media (max-width: 600px) { 
+            .navbar { flex-direction: column; padding: 0.7rem 0.5rem; } 
+            .nav-center { margin: 0.5rem 0; } 
+            .features-grid { grid-template-columns: 1fr; } 
+            .hero h1 { font-size: 2rem; } 
+            .features-title { font-size: 1.5rem; }
+            .section-title { font-size: 2rem; }
+            .stats-container { grid-template-columns: 1fr; gap: 1.5rem; }
+            .stat-number { font-size: 2.5rem; }
+            .download-buttons { flex-direction: column; align-items: center; }
+            .download-visual { flex-direction: column; gap: 1rem; }
+            .testimonials-section { padding: 3rem 1rem; }
+            .app-download-section { padding: 3rem 1rem; }
+            .stats-section { padding: 3rem 1rem; }
+        }
+        
+        /* How It Works Section */
+        .how-it-works-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        .how-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .step-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .step-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        .step-card p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .step-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        .feature-tag {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .how-it-works-demo {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+            margin-top: 3rem;
+        }
+        .how-it-works-demo h3 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .demo-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            transition: transform 0.3s ease;
+        }
+        .demo-item:hover {
+            transform: translateY(-3px);
+        }
+        .demo-item i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .demo-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .demo-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .how-it-works-section { padding: 3rem 1rem; }
+            .steps-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .demo-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .how-it-works-demo { padding: 1.5rem; }
+        }
+        
+        /* Interactive Features Styles */
+        .features-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .feature-card {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            color: var(--secondary);
+        }
+        
+        .click-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-card:hover .click-hint {
+            opacity: 1;
+        }
+        
+        /* Feature Modal Styles */
+        .feature-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .feature-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 0;
+            padding: 0;
+            border-radius: 20px;
+            width: 90vw;
+            height: 45vw;
+            max-width: 1200px;
+            max-height: 600px;
+            min-width: 800px;
+            min-height: 400px;
+            overflow: hidden;
+            position: relative;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #aaa;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+            background: white;
+            transform: scale(1.1);
+        }
+        
+        .feature-detail {
+            padding: 1.5rem 2.5rem;
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 2.5rem;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .feature-detail-left {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .feature-detail-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .feature-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .feature-detail-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            padding: 0.8rem;
+            border-radius: 15px;
+        }
+        
+        .feature-detail h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+        }
+        
+        .feature-detail .tagline {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .feature-benefits {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.7rem;
+            margin: 0.8rem 0;
+            flex: 1;
+            overflow-y: auto;
+            max-height: calc(100% - 200px);
+        }
+        
+        .benefit-item {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .benefit-item:hover {
+            transform: translateX(5px);
+            border-left-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .benefit-icon {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            background: rgba(6, 182, 212, 0.1);
+            padding: 0.6rem;
+            border-radius: 10px;
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .benefit-content {
+            flex: 1;
+        }
+        
+        .benefit-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--dark);
+        }
+        
+        .benefit-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
+        .how-it-works-detail {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .how-it-works-detail h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .steps-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .steps-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        .step-num {
+            background: white;
+            color: var(--primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .modal-content {
+                width: 95vw;
+                height: 47.5vw;
+                max-width: 1000px;
+                max-height: 500px;
+                min-width: 700px;
+                min-height: 350px;
+            }
+            
+            .feature-detail {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+                padding: 1.2rem 1.8rem;
+                overflow-y: auto;
+            }
+            
+            .feature-benefits {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                max-height: none;
+            }
+            
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.6rem;
+                padding: 0.8rem;
+            }
+            
+            .how-it-works-detail {
+                height: auto;
+                min-height: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 96vw;
+                height: 48vw;
+                max-width: 700px;
+                max-height: 350px;
+                min-width: 500px;
+                min-height: 250px;
+                border-radius: 12px;
+            }
+            
+            .feature-detail {
+                padding: 1rem;
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                overflow-y: auto;
+            }
+            
+            .feature-benefits {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+                max-height: none;
+            }
+            
+            .feature-detail-header {
+                flex-direction: row;
+                text-align: left;
+                gap: 0.8rem;
+                margin-bottom: 0.8rem;
+                padding-bottom: 0.6rem;
+            }
+            
+            .feature-detail-icon {
+                font-size: 2rem;
+                padding: 0.6rem;
+            }
+            
+            .feature-detail h2 {
+                font-size: 1.4rem;
+            }
+            
+            .benefit-item {
+                flex-direction: row;
+                text-align: left;
+                padding: 0.6rem;
+            }
+            
+            .how-it-works-detail {
+                padding: 1rem;
+                height: auto;
+                min-height: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 98vw;
+                height: 49vw;
+                max-width: 480px;
+                max-height: 240px;
+                min-width: 400px;
+                min-height: 200px;
+            }
+            
+            .feature-detail {
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+            
+            .feature-detail-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.6rem;
+            }
+            
+            .benefit-item {
+                padding: 0.5rem;
+            }
+            
+            .how-it-works-detail {
+                padding: 0.8rem;
+                min-height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-globe-americas"></i> TravelEase</div>
+        <div class="nav-center">
+            <ul class="nav-links">
+                <li><a href="#top">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="login.html">Sign Up</a></li>
+            </ul>
+        </div>
+        <button class="sos-btn">SOS</button>
+    </nav>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Travel Smarter, Not Harder</h1>
+            <p>Your AI-powered travel companion for safe, personalized, and stress-free journeys.</p>
+            <button class="btn" onclick="scrollToFeatures()">Start Your Journey</button>
+        </div>
+    </section>
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number" data-target="50000">0</div>
+                <div class="stat-label">Happy Travelers</div>
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="150">0</div>
+                <div class="stat-label">Countries Covered</div>
+                <div class="stat-icon"><i class="fas fa-globe"></i></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="99">0</div>
+                <div class="stat-label">Safety Rating</div>
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="24">0</div>
+                <div class="stat-label">Hours Support</div>
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            </div>
+        </div>
+    </section>
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="features-title">Why Choose TravelEase?</div>
+        <p class="features-subtitle">Click on any feature to learn more about how it can transform your travel experience</p>
+        <div class="features-grid">
+            <div class="feature-card" onclick="showFeatureDetails('ai-planner')" data-feature="ai-planner">
+                <span class="feature-icon"><i class="fas fa-robot"></i></span>
+                <div class="feature-title">AI-Powered Travel Planner</div>
+                <div class="feature-desc">Personalized itineraries for every traveler.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('emergency')" data-feature="emergency">
+                <span class="feature-icon"><i class="fas fa-ambulance"></i></span>
+                <div class="feature-title">Emergency Services Integration</div>
+                <div class="feature-desc">Direct police, ambulance, fire connect.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('offline')" data-feature="offline">
+                <span class="feature-icon"><i class="fas fa-wifi"></i></span>
+                <div class="feature-title">Offline Support</div>
+                <div class="feature-desc">Maps and contacts available offline.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('multilang')" data-feature="multilang">
+                <span class="feature-icon"><i class="fas fa-language"></i></span>
+                <div class="feature-title">Multi-Language & Accessibility</div>
+                <div class="feature-desc">Regional Indian languages, voice commands.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('diary')" data-feature="diary">
+                <span class="feature-icon"><i class="fas fa-book"></i></span>
+                <div class="feature-title">Digital Travel Diary</div>
+                <div class="feature-desc">Auto-creates memory book from photos & locations.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('budget')" data-feature="budget">
+                <span class="feature-icon"><i class="fas fa-money-bill-wave"></i></span>
+                <div class="feature-title">Currency Converter & Budget Helper</div>
+                <div class="feature-desc">Real-time exchange + expense tracking.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+            <div class="feature-card" onclick="showFeatureDetails('chatbot')" data-feature="chatbot">
+                <span class="feature-icon"><i class="fas fa-comments"></i></span>
+                <div class="feature-title">AI Travel Assistant (Chatbot)</div>
+                <div class="feature-desc">Ask anything about your trip.</div>
+                <div class="click-hint">Click to learn more</div>
+            </div>
+        </div>
+        
+        <!-- Feature Details Modal -->
+        <div id="featureModal" class="feature-modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeFeatureModal()">&times;</span>
+                <div id="modalContent">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" id="how">
+        <div class="how-container">
+            <h2 class="section-title">How TravelEase Works</h2>
+            <p class="section-subtitle">Your complete AI-powered travel companion in 4 simple steps</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                    <h3>Sign Up & Set Preferences</h3>
+                    <p>Create your account and tell us your travel preferences, budget, and interests. Our AI learns your style to provide personalized recommendations.</p>
+                    <div class="step-features">
+                        <span class="feature-tag">Profile Setup</span>
+                        <span class="feature-tag">Preference Learning</span>
+                        <span class="feature-tag">Budget Setting</span>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="fas fa-route"></i></div>
+                    <h3>AI Creates Your Itinerary</h3>
+                    <p>Simply enter your destination and dates. Our AI analyzes thousands of options to create a personalized itinerary with attractions, restaurants, and activities that match your interests.</p>
+                    <div class="step-features">
+                        <span class="feature-tag">Smart Planning</span>
+                        <span class="feature-tag">Local Insights</span>
+                        <span class="feature-tag">Real-time Updates</span>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Travel With Confidence</h3>
+                    <p>Use our app during your trip for navigation, language translation, currency conversion, and emergency assistance. Everything works offline too!</p>
+                    <div class="step-features">
+                        <span class="feature-tag">Offline Maps</span>
+                        <span class="feature-tag">SOS Emergency</span>
+                        <span class="feature-tag">Live Chat Support</span>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-icon"><i class="fas fa-camera"></i></div>
+                    <h3>Capture & Share Memories</h3>
+                    <p>Our app automatically creates a digital travel diary with your photos, locations, and experiences. Share your journey with friends and family!</p>
+                    <div class="step-features">
+                        <span class="feature-tag">Auto Diary</span>
+                        <span class="feature-tag">Photo Organization</span>
+                        <span class="feature-tag">Social Sharing</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="how-it-works-demo">
+                <h3>What This Page Does For You</h3>
+                <div class="demo-grid">
+                    <div class="demo-item">
+                        <i class="fas fa-info-circle"></i>
+                        <h4>Information Hub</h4>
+                        <p>Learn about all TravelEase features and capabilities</p>
+                    </div>
+                    <div class="demo-item">
+                        <i class="fas fa-download"></i>
+                        <h4>App Download</h4>
+                        <p>Direct links to download our mobile app from App Store and Google Play</p>
+                    </div>
+                    <div class="demo-item">
+                        <i class="fas fa-user-circle"></i>
+                        <h4>Account Access</h4>
+                        <p>Sign up or login to access your personalized travel dashboard</p>
+                    </div>
+                    <div class="demo-item">
+                        <i class="fas fa-phone"></i>
+                        <h4>Support Access</h4>
+                        <p>Get help through our chatbot or emergency SOS button</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Comparison Section -->
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <a href="#">About Us</a>
+                <a href="#">Careers</a>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <a href="#">Contact Us</a>
+            </div>
+        </div>
+        <div class="copyright">&copy; 2025 TravelEase. All rights reserved.</div>
+    </footer>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <!-- Floating Chatbot -->
+    <button class="chatbot-btn" id="chatbotBtn" title="Chatbot"><i class="fas fa-comments"></i></button>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">TravelEase AI Assistant</div>
+        <div class="chatbot-body">Ask me anything about your trip!</div>
+        <input class="chatbot-input" type="text" placeholder="Type your question..." disabled>
+    </div>
+    <script>
+        // Scroll to features function
+        function scrollToFeatures() {
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        // Feature details data
+        const featureDetails = {
+            'ai-planner': {
+                title: 'AI-Powered Travel Planner',
+                tagline: 'Smart Planning, Perfect Trips',
+                icon: 'fas fa-robot',
+                description: 'Our advanced AI analyzes your preferences, budget, and travel style to create personalized itineraries that perfectly match your needs.',
+                benefits: [
+                    {
+                        icon: 'fas fa-brain',
+                        title: 'Smart Recommendations',
+                        desc: 'AI learns from your preferences and suggests destinations, activities, and experiences tailored just for you.'
+                    },
+                    {
+                        icon: 'fas fa-clock',
+                        title: 'Real-time Optimization',
+                        desc: 'Automatically adjusts your itinerary based on weather, crowd levels, and local events.'
+                    },
+                    {
+                        icon: 'fas fa-heart',
+                        title: 'Personalized Experience',
+                        desc: 'Every recommendation is customized based on your interests, travel history, and feedback.'
+                    }
+                ],
+                howItWorks: [
+                    'Tell us your travel preferences and interests',
+                    'AI analyzes thousands of options and reviews',
+                    'Get a personalized itinerary in seconds',
+                    'Continuously optimized during your trip'
+                ]
+            },
+            'emergency': {
+                title: 'Emergency Services Integration',
+                tagline: 'Your Safety, Our Priority',
+                icon: 'fas fa-ambulance',
+                description: 'Instant access to emergency services with one-touch SOS button. Connected to local police, ambulance, and fire services worldwide.',
+                benefits: [
+                    {
+                        icon: 'fas fa-phone-alt',
+                        title: 'One-Touch SOS',
+                        desc: 'Instantly connect to emergency services with location sharing and medical information.'
+                    },
+                    {
+                        icon: 'fas fa-map-marker-alt',
+                        title: 'Location Sharing',
+                        desc: 'Automatically shares your exact location with emergency responders and your emergency contacts.'
+                    },
+                    {
+                        icon: 'fas fa-shield-alt',
+                        title: '24/7 Monitoring',
+                        desc: 'Round-the-clock safety monitoring with proactive alerts for unsafe areas.'
+                    }
+                ],
+                howItWorks: [
+                    'Press the SOS button in any emergency',
+                    'Your location and medical info are shared instantly',
+                    'Emergency services are contacted automatically',
+                    'Your emergency contacts are notified immediately'
+                ]
+            },
+            'offline': {
+                title: 'Offline Support',
+                tagline: 'Connected Even When Disconnected',
+                icon: 'fas fa-wifi',
+                description: 'Access maps, contacts, and essential travel information even without internet connection. Never be lost or disconnected again.',
+                benefits: [
+                    {
+                        icon: 'fas fa-map',
+                        title: 'Offline Maps',
+                        desc: 'Detailed maps with navigation work perfectly without internet connection.'
+                    },
+                    {
+                        icon: 'fas fa-address-book',
+                        title: 'Offline Contacts',
+                        desc: 'Access emergency contacts, hotels, and important numbers anytime.'
+                    },
+                    {
+                        icon: 'fas fa-info-circle',
+                        title: 'Cached Information',
+                        desc: 'Key travel information and itinerary details stored locally on your device.'
+                    }
+                ],
+                howItWorks: [
+                    'Download maps and data before your trip',
+                    'Essential information is cached on your device',
+                    'Access everything even without internet',
+                    'Sync updates when connection is restored'
+                ]
+            },
+            'multilang': {
+                title: 'Multi-Language & Accessibility',
+                tagline: 'Breaking Language Barriers',
+                icon: 'fas fa-language',
+                description: 'Communicate effortlessly with support for multiple Indian regional languages and accessibility features for all travelers.',
+                benefits: [
+                    {
+                        icon: 'fas fa-comment',
+                        title: 'Regional Languages',
+                        desc: 'Full support for Hindi, Tamil, Telugu, Bengali, Marathi, and 15+ Indian languages.'
+                    },
+                    {
+                        icon: 'fas fa-microphone',
+                        title: 'Voice Commands',
+                        desc: 'Navigate and control the app using voice commands in your preferred language.'
+                    },
+                    {
+                        icon: 'fas fa-universal-access',
+                        title: 'Accessibility Features',
+                        desc: 'Screen reader support, high contrast mode, and large text options.'
+                    }
+                ],
+                howItWorks: [
+                    'Select your preferred language during setup',
+                    'All content is automatically translated',
+                    'Use voice commands for hands-free operation',
+                    'Accessibility features adapt to your needs'
+                ]
+            },
+            'diary': {
+                title: 'Digital Travel Diary',
+                tagline: 'Memories Made Automatic',
+                icon: 'fas fa-book',
+                description: 'Automatically creates beautiful travel memories from your photos, locations, and experiences. Never forget a moment of your journey.',
+                benefits: [
+                    {
+                        icon: 'fas fa-camera',
+                        title: 'Auto Photo Organization',
+                        desc: 'Automatically organizes photos by location and date with intelligent tagging.'
+                    },
+                    {
+                        icon: 'fas fa-route',
+                        title: 'Journey Mapping',
+                        desc: 'Creates visual maps of your travels with photos and memories at each location.'
+                    },
+                    {
+                        icon: 'fas fa-share-alt',
+                        title: 'Easy Sharing',
+                        desc: 'Share your travel diary with friends and family or export as a beautiful book.'
+                    }
+                ],
+                howItWorks: [
+                    'Take photos during your trip as usual',
+                    'AI automatically organizes by location and time',
+                    'Memories are compiled into a beautiful diary',
+                    'Share or print your personalized travel book'
+                ]
+            },
+            'budget': {
+                title: 'Currency Converter & Budget Helper',
+                tagline: 'Smart Money Management',
+                icon: 'fas fa-money-bill-wave',
+                description: 'Real-time currency conversion and intelligent budget tracking to help you manage expenses and never overspend during your travels.',
+                benefits: [
+                    {
+                        icon: 'fas fa-exchange-alt',
+                        title: 'Real-time Rates',
+                        desc: 'Live currency exchange rates updated every minute for accurate conversions.'
+                    },
+                    {
+                        icon: 'fas fa-chart-line',
+                        title: 'Expense Tracking',
+                        desc: 'Automatically categorize and track all your travel expenses with smart insights.'
+                    },
+                    {
+                        icon: 'fas fa-bell',
+                        title: 'Budget Alerts',
+                        desc: 'Get notified when approaching budget limits with personalized spending recommendations.'
+                    }
+                ],
+                howItWorks: [
+                    'Set your travel budget and currencies',
+                    'Scan receipts or log expenses easily',
+                    'Get real-time currency conversions',
+                    'Receive smart budget insights and alerts'
+                ]
+            },
+            'chatbot': {
+                title: 'AI Travel Assistant (Chatbot)',
+                tagline: 'Your 24/7 Travel Companion',
+                icon: 'fas fa-comments',
+                description: 'Intelligent AI assistant available 24/7 to answer questions, provide recommendations, and help with any travel-related queries.',
+                benefits: [
+                    {
+                        icon: 'fas fa-clock',
+                        title: '24/7 Availability',
+                        desc: 'Get instant answers to travel questions anytime, anywhere in the world.'
+                    },
+                    {
+                        icon: 'fas fa-lightbulb',
+                        title: 'Smart Suggestions',
+                        desc: 'Personalized recommendations for restaurants, activities, and hidden gems.'
+                    },
+                    {
+                        icon: 'fas fa-language',
+                        title: 'Multilingual Support',
+                        desc: 'Communicate in your preferred language with natural conversation flow.'
+                    }
+                ],
+                howItWorks: [
+                    'Ask any travel-related question',
+                    'AI understands context and preferences',
+                    'Get instant, personalized responses',
+                    'Learn and improve with each interaction'
+                ]
+            }
+        };
+        
+        // Show feature details modal
+        function showFeatureDetails(featureId) {
+            const modal = document.getElementById('featureModal');
+            const modalContent = document.getElementById('modalContent');
+            const feature = featureDetails[featureId];
+            
+            if (!feature) return;
+            
+            const content = `
+                <div class="feature-detail">
+                    <div class="feature-detail-left">
+                        <div class="feature-detail-header">
+                            <div class="feature-detail-icon">
+                                <i class="${feature.icon}"></i>
+                            </div>
+                            <div>
+                                <h2>${feature.title}</h2>
+                                <div class="tagline">${feature.tagline}</div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 1.1rem; line-height: 1.6; color: #64748b; margin-bottom: 1.5rem; flex-shrink: 0;">
+                            ${feature.description}
+                        </p>
+                        
+                        <div class="feature-benefits">
+                            ${feature.benefits.map(benefit => `
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="${benefit.icon}"></i>
+                                    </div>
+                                    <div class="benefit-content">
+                                        <h4>${benefit.title}</h4>
+                                        <p>${benefit.desc}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="feature-detail-right">
+                        <div class="how-it-works-detail">
+                            <h3><i class="fas fa-cogs" style="margin-right: 0.5rem;"></i>How It Works</h3>
+                            <ol class="steps-list">
+                                ${feature.howItWorks.map((step, index) => `
+                                    <li>
+                                        <span class="step-num">${index + 1}</span>
+                                        <span>${step}</span>
+                                    </li>
+                                `).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modalContent.innerHTML = content;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close feature details modal
+        function closeFeatureModal() {
+            const modal = document.getElementById('featureModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('featureModal');
+            if (e.target === modal) {
+                closeFeatureModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFeatureModal();
+            }
+        });
+        
+        // Chatbot open/close
+        const chatbotBtn = document.getElementById('chatbotBtn');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        chatbotBtn.onclick = function() {
+            chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+        };
+        // Close chatbot when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!chatbotWindow.contains(e.target) && e.target !== chatbotBtn) {
+                chatbotWindow.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                TravelEase
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html" id="loginBtn">Login</a></li>
+                <li><a href="login.html" id="signupBtn">Sign Up</a></li>
+            </ul>
+            <a href="#" class="btn">Get Started</a>
+        </nav>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeLogin">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="switchToSignup">Sign Up</a></p>
+        </div>
+    </div>
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeSignup">&times;</span>
+            <h2>Sign Up</h2>
+            <form>
+                <input type="text" placeholder="Name" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" id="switchToLogin">Login</a></p>
+        </div>
+    </div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Travel Smarter, Not Harder</h1>
+            <p>Your AI-powered travel companion that takes care of everything from planning to safety, so you can focus on making memories.</p>
+            <a href="#" class="btn">Start Your Journey</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2 class="text-3xl font-bold text-white mb-2">Amazing Features</h2>
+            <p class="text-indigo-100 mb-6">Discover how TravelEase revolutionizes your travel experience with cutting-edge AI technology</p>
+        </div>
+        <div class="w-full py-10 px-2 rounded-2xl" style="background: linear-gradient(90deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%);">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Feature Card Example -->
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-robot"></i></span>
+                <h3 class="font-bold text-lg mb-2">AI Chatbot</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-white bg-opacity-95 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500">
+                <p class="text-gray-700 text-base">24/7 AI guide for nearest hospitals, food spots, or translations.</p>
+              </div>
+            </div>
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-shield-alt"></i></span>
+                <h3 class="font-bold text-lg mb-2">SOS Safety</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-red-100 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500 group-hover:shadow-red-500">
+                <p class="text-red-600 text-base animate-pulse">SOS button, unsafe zone alerts, and emergency contact sharing for peace of mind.</p>
+              </div>
+            </div>
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-money-bill-wave"></i></span>
+                <h3 class="font-bold text-lg mb-2">Currency Converter</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-white bg-opacity-95 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500">
+                <p class="text-gray-700 text-base">Real-time currency exchange and smart expense tracking for all travelers.</p>
+              </div>
+            </div>
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-book"></i></span>
+                <h3 class="font-bold text-lg mb-2">Travel Diary</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-white bg-opacity-95 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500">
+                <p class="text-gray-700 text-base">Automatically creates a memory book from your photos and locations.</p>
+              </div>
+            </div>
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-suitcase"></i></span>
+                <h3 class="font-bold text-lg mb-2">Packing Assistant</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-white bg-opacity-95 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500">
+                <p class="text-gray-700 text-base">Smart packing checklist based on trip type and weather forecasts.</p>
+              </div>
+            </div>
+            <div class="feature-card group bg-white bg-opacity-80 p-6 m-4 rounded-2xl shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onclick="toggleFeature(this)" onmouseover="iconBounce(this)" onmouseout="iconUnbounce(this)">
+              <div class="flex flex-col items-center">
+                <span class="text-5xl mb-2 transition-transform duration-300"><i class="fas fa-trophy"></i></span>
+                <h3 class="font-bold text-lg mb-2">Rewards & Badges</h3>
+              </div>
+              <div class="feature-desc absolute left-0 top-0 w-full h-full bg-white bg-opacity-95 rounded-2xl p-6 flex flex-col justify-center items-center text-center opacity-0 pointer-events-none transition-all duration-500">
+                <p class="text-gray-700 text-base">Earn badges and discounts for exploring sustainably.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+                <div class="feature-icon">
+                    <i class="fas fa-suitcase"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>AI Packing Assistant</h3>
+                    <p>Smart packing checklist based on trip type and weather forecasts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Transform Your Travel Experience?</h2>
+        <p>Join thousands of travelers who are already using TravelEase to make their journeys safer, smarter, and more memorable.</p>
+        <a href="#" class="btn">Download Now</a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TravelEase</h3>
+                <p>Your AI-powered travel companion that takes care of everything from planning to safety.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="index.html.html">Home</a>
+                <a href="#features">Features</a>
+                <a href="#how">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Travel Street, Explore City</p>
+                <p><i class="fas fa-phone"></i> +1 (234) 567-8901</p>
+                <p><i class="fas fa-envelope"></i> info@travelease.com</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 TravelEase. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background: rgba(44, 62, 80, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            max-width: 350px;
+            box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+            position: relative;
+            text-align: center;
+        }
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .modal-content .btn {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        .modal-content p {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        .modal-content a {
+            color: var(--primary);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // Feature card expand/collapse logic
+        function toggleFeature(card) {
+            const desc = card.querySelector('.feature-desc');
+            if (desc.classList.contains('opacity-0')) {
+                desc.classList.remove('opacity-0', 'pointer-events-none');
+                desc.classList.add('opacity-100', 'pointer-events-auto');
+                card.classList.add('scale-105');
+            } else {
+                desc.classList.add('opacity-0', 'pointer-events-none');
+                desc.classList.remove('opacity-100', 'pointer-events-auto');
+                card.classList.remove('scale-105');
+            }
+        }
+        // Icon bounce animation
+        function iconBounce(card) {
+            const icon = card.querySelector('span');
+            icon.classList.add('animate-bounce');
+            // SOS feature glow
+            if (card.querySelector('h3').textContent.includes('SOS')) {
+                card.classList.add('ring-4', 'ring-red-400');
+            }
+        }
+        function iconUnbounce(card) {
+            const icon = card.querySelector('span');
+            icon.classList.remove('animate-bounce');
+            if (card.querySelector('h3').textContent.includes('SOS')) {
+                card.classList.remove('ring-4', 'ring-red-400');
+            }
+        }
+        // Simple animation for feature cards when they come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            featureCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Login and signup now redirect to login.html - no modal logic needed
+            
+            // Counter Animation for Statistics
+            function animateCounters() {
+                const counters = document.querySelectorAll('.stat-number');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const count = parseInt(counter.innerText);
+                    const increment = target / 100;
+                    
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(() => animateCounters(), 20);
+                    } else {
+                        counter.innerText = target;
+                        if (target === 99) counter.innerText = '99%';
+                        if (target === 24) counter.innerText = '24/7';
+                    }
+                });
+            }
+            
+            // Trigger counter animation when stats section comes into view
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+            
+            // Enhanced parallax effect for hero section
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('.hero');
+                if (hero) {
+                    hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                }
+            });
+            
+            // Testimonial cards stagger animation
+            const testimonialObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 200);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.testimonial-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                testimonialObserver.observe(card);
+            });
+            
+            // Enhanced chatbot with typing effect
+            const chatbotBtn = document.getElementById('chatbotBtn');
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            const chatbotBody = document.querySelector('.chatbot-body');
+            
+            const responses = [
+                "Hello! I'm your AI travel assistant. How can I help you today?",
+                "I can help you plan your trip, find the best routes, and ensure your safety!",
+                "Need recommendations for restaurants, hotels, or attractions? Just ask!",
+                "Want to know about currency exchange rates or travel tips? I'm here to help!"
+            ];
+            
+            function typeWriter(text, element, callback) {
+                let i = 0;
+                element.innerHTML = '';
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        if (callback) callback();
+                    }
+                }, 50);
+            }
+            
+            if (chatbotBtn && chatbotWindow) {
+                chatbotBtn.onclick = function() {
+                    const isVisible = chatbotWindow.style.display === 'flex';
+                    chatbotWindow.style.display = isVisible ? 'none' : 'flex';
+                    
+                    if (!isVisible) {
+                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                        typeWriter(randomResponse, chatbotBody);
+                    }
+                };
+            }
+            
+            // Back to Top Button
+            const backToTop = document.getElementById('backToTop');
+            if (backToTop) {
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        backToTop.classList.add('visible');
+                    } else {
+                        backToTop.classList.remove('visible');
+                    }
+                });
+                
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Add loading animation to page
+            window.addEventListener('load', () => {
+                document.body.style.opacity = '0';
+                document.body.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

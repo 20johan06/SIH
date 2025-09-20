@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup | TravelEase</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #232526 0%, #3498db 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .auth-wrapper {
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+            border-radius: 24px;
+            padding: 2.5rem 2.5rem 1.5rem 2.5rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .brand {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 1.2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .auth-wrapper h2 {
+            margin-bottom: 1.2rem;
+            color: #232526;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .auth-wrapper form {
+            margin-bottom: 0.5rem;
+        }
+        .auth-wrapper input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #b2bec3;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.7);
+            transition: border 0.2s;
+        }
+        .auth-wrapper input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .auth-wrapper .btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(90deg, #3498db, #232526);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .auth-wrapper .btn:hover {
+            background: linear-gradient(90deg, #232526, #3498db);
+            transform: scale(1.03);
+        }
+        .auth-wrapper p {
+            font-size: 0.97rem;
+            color: #232526;
+        }
+        .auth-wrapper a {
+            color: #3498db;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .back-link {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        .back-link a {
+            font-size: 0.9rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 500px) {
+            .auth-wrapper {
+                padding: 1.2rem 0.5rem;
+                max-width: 98vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper" id="loginBox">
+        <div class="brand"><i class="fas fa-globe-americas"></i> TravelEase</div>
+        <div class="back-link">
+            <a href="index.html.html">← Back to Home</a>
+        </div>
+        <h2>Login</h2>
+        <form onsubmit="handleLogin(event)">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p>Don't have an account? <a id="showSignup">Sign Up</a></p>
+    </div>
+    <div class="auth-wrapper hidden" id="signupBox">
+        <div class="brand"><i class="fas fa-globe-americas"></i> TravelEase</div>
+        <div class="back-link">
+            <a href="index.html.html">← Back to Home</a>
+        </div>
+        <h2>Sign Up</h2>
+        <form onsubmit="handleSignup(event)">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p>Already have an account? <a id="showLogin">Login</a></p>
+    </div>
+    <script>
+        const loginBox = document.getElementById('loginBox');
+        const signupBox = document.getElementById('signupBox');
+        
+        document.getElementById('showSignup').onclick = function() {
+            loginBox.classList.add('hidden');
+            signupBox.classList.remove('hidden');
+        };
+        
+        document.getElementById('showLogin').onclick = function() {
+            signupBox.classList.add('hidden');
+            loginBox.classList.remove('hidden');
+        };
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            // Here you would typically validate credentials with a server
+            // For demo purposes, we'll just redirect to index.html.html
+            alert('Login successful! Redirecting to TravelEase...');
+            window.location.href = 'index.html.html';
+        }
+        
+        function handleSignup(event) {
+            event.preventDefault();
+            // Here you would typically create account with a server
+            // For demo purposes, we'll just redirect to index.html.html
+            alert('Account created successfully! Redirecting to TravelEase...');
+            window.location.href = 'index.html.html';
+        }
+    </script>
+</body>
+</html>
